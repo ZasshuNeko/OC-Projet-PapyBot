@@ -8,7 +8,6 @@ import json
 from traitement import Traitement
 from fichierjson import Sourcejson
 
-# nltk.download('stopwords')
 app = Flask(__name__, static_url_path='/static')
 
 

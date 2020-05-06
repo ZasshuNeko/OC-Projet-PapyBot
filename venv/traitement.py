@@ -10,7 +10,8 @@ import unicodedata
 
 import nltk
 
-
+nltk.data.path.append('nltk_data/')
+#nltk.download('stopwords')
 class Traitement:
     def __init__(self):
         self.liste_terme = [

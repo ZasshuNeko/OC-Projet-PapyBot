@@ -10,7 +10,6 @@ class Api_google:
 
     def __init__(self):
         self.adresse_api = 'https://www.google.com/maps/search/?api=1&query='
-        #self.carte_api = '&map_action=map'
 
     def search_api(self, demande):
         """Créer la demande et permet d'obtenir la réponse avec la variable
