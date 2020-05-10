@@ -40,7 +40,7 @@ class Traitement:
             reponse_wiki = search_terme
         else:
             reponse_apigoogle = self.api_google(search_terme)
-            if len(reponse_apigoogle) >= 3:
+            if len(reponse_apigoogle) >= 3 and type(reponse_apigoogle) is list:
                 reponse_wiki = self.api_wiki(
                     search_terme, reponse_apigoogle[2])
             else:
@@ -79,7 +79,7 @@ class Traitement:
         # Retire les stopword de la liste des mots fait à partir de la
         # demande
         filtered_words = [
-            word for word in liste_demande if word not in stopwords.words('French')]
+            word for word in liste_demande if word not in stopwords.words('french')]
         for index, mot in enumerate(filtered_words):
             if mot in self.liste_terme:
 

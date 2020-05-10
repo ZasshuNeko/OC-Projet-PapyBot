@@ -11,7 +11,8 @@ import requests
 import requests_mock
 from io import BytesIO
 
-import main as script
+import traitement as script
+import fichierjson as script_json
 import api_wiki as script_wiki
 import api_google as script_google
 
@@ -19,18 +20,25 @@ import api_google as script_google
 class Testmain:
 
     def setup_method(self):
-        self.correction = script.correction_demande(
+        self.traitement = script.Traitement()
+        self.correction = self.traitement.correction_demande(
             "Ou est OpenClassrooms ?")
-        self.salutation = script.salutation_utilisateur("bonjour")
+        self.salutation = self.traitement.salutation_utilisateur("bonjour")
+        self.fichierjson = script_json.Sourcejson()
+
+
+    def json(sefl):
+        sortie_json = fichierjson.creation_json("Test demande",["test",True,"Test"])
+        print(sortie_json)
 
     def test_reponse_papy_add(self):
-        reponse_papy = script.papy_reponse(
+        reponse_papy =  self.fichierjson.papy_reponse(
             'test', False, [
                 "lien", "25 rue test,75000 Paris", "add"])
         assert reponse_papy == "<li class='list-group-item list-group-item-success'>Papy : test</br>Alors mon petit ! Sache que cela est situé 25 rue test code postal 75000 Paris</li>"
 
     def test_reponse_papy_nom(self):
-        reponse_papy = script.papy_reponse(
+        reponse_papy =  self.fichierjson.papy_reponse(
             "test", False, [
                 "lien", "TrucTruc,25 rue test,75000 Paris", "add"])
         assert reponse_papy == "<li class='list-group-item list-group-item-success'>Papy : test</br>Alors mon petit ! Sache que TrucTruc est situé 25 rue test code postal 75000 Paris</li>"
@@ -43,7 +51,7 @@ class Testmain:
         assert self.salutation == 'Un jeune bien élevé comme on les apprécie tant ! '
 
     def test_chercher_terme(self):
-        terme = script.chercher_termes(["quoi", "velo"])
+        terme = self.traitement.chercher_termes(["quoi", "velo"])
         assert terme == ["velo", False]
 
 

@@ -3,77 +3,67 @@
 """Ce Fichier fichier contient les fonctionnalités de l'API google."""
 import requests
 import re
+import json
 
 
 class Api_google:
     """Cette classe permet de créer les demandes avec l'API google."""
 
     def __init__(self):
-        self.adresse_api = 'https://www.google.com/maps/search/?api=1&query='
+        #self.adresse_api = 'https://www.google.com/maps/search/?api=1&query='
+        self.adresse_api = 'https://maps.googleapis.com/maps/api/place/textsearch/json?'
+        self.key = 'AIzaSyD72ipLMIMctyuEMV2hsnWSqCozg8uE9Ok'
+        self.geometry_dict = {}
+        self.geometry_tab = []
+        self.reponse_tab = [] 
 
     def search_api(self, demande):
         """Créer la demande et permet d'obtenir la réponse avec la variable
         selection."""
-        question_api = self.adresse_api + demande
-        r = requests.get(question_api)
-        reponse = str(r.content)
+        #question_api = self.adresse_api + demande
+        #r = requests.get(question_api)
+        #reponse = str(r.content)
+
+        parametres = self.config_requests(demande,self.key)
+        rtest = requests.get(url=self.adresse_api, params=parametres)
+        reponseG = rtest.json()
+        selection = self.geometry_json(reponseG)
+        print(selection)
+
         # Permet de sélectionner le lien vers l'image google map
-        selection = selection_api(reponse)
+        #selection = selection_api(reponse)
         return selection
 
+    def config_requests(self,demande,key):
+        parametres = {'query' : demande,
+        'region' : 'fr',
+        'key' : key }
 
-def selection_api(reponse):
-    """Cette fonction sélectionne l'image dans la réponse de l'API google."""
-    liste_reponse = reponse.split('"')
-    reponse_tab = []
-    for n in liste_reponse:
-        if n.startswith(
-                "https://www.google") and n.find("/preview/") != -1:
-            reponse_tab.append(n)
-        elif n.startswith("https://maps.google") and n.find("&") != -1:
-            if n not in reponse_tab:
-                reponse_tab.append(n)
-    if len(reponse_tab) >= 1:
-        lock_reponse = reponse_tab
-        html = recuperation_html(lock_reponse)
-    else:
-        html = "Mes cartes ne trouvent pas ce que tu désire"
-    return html
+        return parametres
 
 
-def recuperation_html(selection):
-    """Formate le lien html."""
-    booleen_localisation = False
-    for index, mot in enumerate(selection):
-        if mot.find("https://www.google") != -1:
-            html = mot.replace('\\', '')
-            html = html.replace('u003d', '=')
-            html = html.replace('%C3%A9', 'é')
-            adresse_html = html.split("/")
-            for index, terme in enumerate(adresse_html):
-                if terme == "place":
-                    localisation = adresse_html[index + 1]
-                    break
-            localisation = localisation.replace("+", " ")
-            booleen_localisation = True
-        elif mot.find("https://maps.google") != -1:
-            html = mot.replace('&amp;', '&')
-            lien = html
+    def geometry_json(self,reponsejson):
 
-    if booleen_localisation:
-        rue = recuperation_rue(localisation)
-        return [lien, localisation, rue]
-    else:
-        return [lien]
+        x = 0
+        for dic in reponsejson['results']:
+            position = "position" + str(x)
+            self.geometry_dict[position] = dic['geometry']['location']
+            x += 1
+        fichier_json = json.dumps(self.geometry_dict)
+        self.geometry_tab.append(fichier_json)
+        self.reponse_tab.append(self.geometry_tab)
+        if x == 1:
+            insert_localisation = dic['formatted_address']
+            self.reponse_tab.append(insert_localisation)
+
+        #----------------------------------
+        # A mettre dans un autre module
+            localisation_rue = insert_localisation.split(",")
+            rue = localisation_rue[0].strip()
+        #-----------------------------------
+
+            self.reponse_tab.append(rue)
+
+        return self.reponse_tab
 
 
-def recuperation_rue(localisation):
-    if isinstance(localisation[0:1], str):
-        localisation_rue = localisation.split(",")
-        nbr_rue = re.findall('\\d+', localisation_rue[1])[0]
-        rue = localisation_rue[1].replace(nbr_rue, "")
-        rue = rue.strip()
-    else:
-        localisation_rue = localisation.split(",")
-        rue = localisation_rue[0].strip()
-    return rue

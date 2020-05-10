@@ -14,8 +14,8 @@ class Sourcejson():
     def creation_json(self, demande, gestion_demande):
         if len(gestion_demande[0]) >= 1:
             demande = self.warning + demande + self.end
-            url_google = self.success + "<img src=" + \
-                gestion_demande[0][0] + " class='img-fluid' />" + self.end
+            print(gestion_demande[0][0])
+            url_google = gestion_demande[0][0]
             reponse_papy = self.papy_reponse(
                 gestion_demande[2], gestion_demande[3], gestion_demande[0])
             papy_wiki = self.success + "<p>Papy :" + \
@@ -24,7 +24,7 @@ class Sourcejson():
             demande = self.warning + demande + self.end
             papy_wiki = self.success + "<p>Papy :" + \
                 gestion_demande[1] + "</p>" + self.end
-            url_google = ""
+            url_google = [{}]
             reponse_papy = self.papy_reponse(
                 gestion_demande[2], gestion_demande[3])
 
@@ -44,15 +44,19 @@ class Sourcejson():
                 "Papy : Hmmmm attends ...heu..." + self.end
         else:
             selection_adresse = adresse[0]
-            if len(selection_adresse) >= 2:
+            if len(selection_adresse) >= 2 and type(selection_adresse) is list:
                 lieu = selection_adresse[1]
                 ss_chaine = str(lieu[0:1])
                 if ss_chaine.isalpha() == False:
                     indication_papy = self.reponse_add(lieu)
                 else:
                     indication_papy = self.reponse_nom(lieu)
+            elif type(selection_adresse) is str:
+                indication_papy = self.success + \
+                    selection_adresse + self.end
             else:
                 indication_papy = "Voyons, il y a beaucoup d'endroit pour tous te les citer"
+            
             indication_papy = self.success + "Papy : " + \
                 salutation + "</br>" + indication_papy + self.end
         return indication_papy
