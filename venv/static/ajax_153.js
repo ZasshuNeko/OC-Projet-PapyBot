@@ -40,15 +40,33 @@ $(document).ready(function() {
 				success: function(response){console.log(response);}
 			})
 			.done(function(data) {
-				var chaine = JSON.parse(data)
-				var demande = chaine.resultat
-				var url_google = chaine.url_google
-				var localisation = chaine.localisation
-				var wiki = chaine.wiki
-				var map
+				var chaine = JSON.parse(data);
+				var demande = chaine.resultat;
+				var url_google = chaine.url_google;
+				var localisation = chaine.localisation;
+				var wiki = chaine.wiki;
+				
+				$('#txt').val("");
+				if(demande.lenght != 0){
+					$('#historique').append(demande);	
+				}
 
+				if (localisation.lenght != 0){
+					$('#historique').append(localisation);	
+				}
+				
+				if (url_google.lenght != 0){
+					$('#historique').append("<li class='list-group-item list-group-item-success' class='map' style='height:400px;'></li>")
+					$('.corps').each(function(){
+						var x = 0;
+						$(this).find('li').each(function(){
+							x++;
+						});
+					});
+					mapInit = "map" + x;
+					$("li").last().attr("id",mapInit)
 					function initMap() {
-						map = new google.maps.Map(document.getElementById('map'), {
+						map = new google.maps.Map(document.getElementById(mapInit), {
 							center: new google.maps.LatLng(48.852969, 2.349903),
 							zoom: 11,
 							mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -62,31 +80,18 @@ $(document).ready(function() {
 								style: google.maps.NavigationControlStyle.ZOOM_PAN
 							}
 						});
-						if (url_google.lenght != 0){
-							$.each(JSON.parse(url_google), function(i,localisation){
-								var marker = new google.maps.Marker({
-									position: {lat: localisation.lat, lng: localisation.lng},
-									map: map
-									});	
-								});
-						}
+						$.each(JSON.parse(url_google), function(i,localisation){
+							console.log(localisation)
+							var marker = new google.maps.Marker({
+								position: {lat: localisation.lat, lng: localisation.lng},
+								map: map
+							});	
+						});
 					}
-
-				$('#txt').val("");
-				if(demande.lenght != 0){
-					$('#historique').append(demande);	
-				}
-
-				if (localisation.lenght != 0){
-					$('#historique').append(localisation);	
-				}
-				
-				if (url_google.lenght != 0){
-					$('#historique').append("<li class='list-group-item list-group-item-success' id='map' style='height:400px;'></li>")
-					initMap();
+					initMap()
 					
 				}
-					//$('#historique').append(map);
+
 				if(wiki.lenght != 0){
 					$('#historique').append(wiki);	
 				}	

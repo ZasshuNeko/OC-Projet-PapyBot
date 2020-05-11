@@ -40,38 +40,12 @@ $(document).ready(function() {
 				success: function(response){console.log(response);}
 			})
 			.done(function(data) {
-				var chaine = JSON.parse(data)
-				var demande = chaine.resultat
-				var url_google = chaine.url_google
-				var localisation = chaine.localisation
-				var wiki = chaine.wiki
-				var map
-
-				if (url_google.lenght != 0){
-					function initMap() {
-						map = new google.maps.Map(document.getElementById('map'), {
-							center: new google.maps.LatLng(48.852969, 2.349903),
-							zoom: 11,
-							mapTypeId: google.maps.MapTypeId.ROADMAP,
-							mapTypeControl: true,
-							scrollwheel: false,
-							mapTypeControlOptions: {
-								style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR
-							},
-							navigationControl: true,
-							navigationControlOptions: {
-								style: google.maps.NavigationControlStyle.ZOOM_PAN
-							}
-						});
-						$.each(JSON.parse(url_google), function(i,localisation){
-							var marker = new google.maps.Marker({
-								position: {lat: localisation.lat, lng: localisation.lng},
-								map: map
-								});	
-							});
-					}
-				}
-
+				var chaine = JSON.parse(data);
+				var demande = chaine.resultat;
+				var url_google = chaine.url_google;
+				var localisation = chaine.localisation;
+				var wiki = chaine.wiki;
+				
 				$('#txt').val("");
 				if(demande.lenght != 0){
 					$('#historique').append(demande);	
@@ -82,11 +56,39 @@ $(document).ready(function() {
 				}
 				
 				if (url_google.lenght != 0){
-					$('#historique').append("<li class='list-group-item list-group-item-success' id='map' style='height:400px;'></li>")
-					initMap();
+					$('#historique').append("<li class='list-group-item list-group-item-success' class='map' style='height:400px;'></li>")
+					$('.corps').each(function(){
+						var x = 0;
+						$(this).find('li').each(function(){
+							x++;
+						});
+					});
+					mapInit = "map" + x;
+					$("li").last().attr("id",mapInit)
+					map = new google.maps.Map(document.getElementById(mapInit), {
+						center: new google.maps.LatLng(48.852969, 2.349903),
+						zoom: 11,
+						mapTypeId: google.maps.MapTypeId.ROADMAP,
+						mapTypeControl: true,
+						scrollwheel: false,
+						mapTypeControlOptions: {
+							style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR
+						},
+						navigationControl: true,
+						navigationControlOptions: {
+							style: google.maps.NavigationControlStyle.ZOOM_PAN
+						}
+					});
+					$.each(JSON.parse(url_google), function(i,localisation){
+						console.log(localisation, "-------", localisation.lat)
+						var marker = new google.maps.Marker({
+							position: new google.maps.LatLng(localisation.lat,localisation.lng),
+							map: map
+						});	
+					});
 					
 				}
-					//$('#historique').append(map);
+
 				if(wiki.lenght != 0){
 					$('#historique').append(wiki);	
 				}	

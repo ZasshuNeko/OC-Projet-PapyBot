@@ -78,12 +78,18 @@ def test_request_wiki(monkeypatch):
          ))
     assert result['Pytest'] == 'Réponse test'
 
+class MockReponseGoogle:
+    @staticmethod
+    def json():
+        return {'results':'test'}
+
 
 def test_request_google(monkeypatch):
 
-    with mock.patch("requests.get") as patch_get:
-        patch_get.return_value.content = "https://www.google/test, https://autrehtml"
+    def mock_get(*args, **kwargs):
+        return MockReponseGoogle()
 
-        result = script_google.Api_google()
-        resultsecond = result.search_api("OpenClassrooms")
-        assert resultsecond == "Mes cartes ne trouvent pas ce que tu désire"
+    monkeypatch.setattr(requests, "get", mock_get)
+    script_ini = script_google.Api_google()
+    result = script_ini.search_api('test')
+    assert type(result) is list

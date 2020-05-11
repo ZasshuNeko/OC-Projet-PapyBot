@@ -40,15 +40,32 @@ $(document).ready(function() {
 				success: function(response){console.log(response);}
 			})
 			.done(function(data) {
-				var chaine = JSON.parse(data)
-				var demande = chaine.resultat
-				var url_google = chaine.url_google
-				var localisation = chaine.localisation
-				var wiki = chaine.wiki
-				var map
+				var chaine = JSON.parse(data);
+				var demande = chaine.resultat;
+				var url_google = chaine.url_google;
+				var localisation = chaine.localisation;
+				var wiki = chaine.wiki;
+				
+				$('#txt').val("");
+				if(demande.lenght != 0){
+					$('#historique').append(demande);	
+				}
 
-				function initMap() {
-					map = new google.maps.Map(document.getElementById('map'), {
+				if (localisation.lenght != 0){
+					$('#historique').append(localisation);	
+				}
+				
+				if (url_google.lenght != 0){
+					$('#historique').append("<li class='list-group-item list-group-item-success' class='map' style='height:400px;'></li>")
+					$('.corps').each(function(){
+						var x = 0;
+						$(this).find('li').each(function(){
+							x++;
+						});
+					});
+					mapInit = "map" + x;
+					$("li").last().attr("id",mapInit)
+					map = new google.maps.Map(document.getElementById(mapInit), {
 						center: new google.maps.LatLng(48.852969, 2.349903),
 						zoom: 11,
 						mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -68,23 +85,9 @@ $(document).ready(function() {
 							map: map
 							});	
 						});
-				}
-
-
-				$('#txt').val("");
-				
-				if (url_google.lenght != 0){
-					$('#historique').append("<li class='list-group-item list-group-item-success' id='map' style='height:400px;'></li>")
-					initMap();
 					
 				}
-					//$('#historique').append(map);
-				if(demande.lenght != 0){
-					$('#historique').append(demande);	
-				}
-				if (localisation.lenght != 0){
-					$('#historique').append(localisation);	
-				}
+
 				if(wiki.lenght != 0){
 					$('#historique').append(wiki);	
 				}	

@@ -14,7 +14,6 @@ class Sourcejson():
     def creation_json(self, demande, gestion_demande):
         if len(gestion_demande[0]) >= 1:
             demande = self.warning + demande + self.end
-            print(gestion_demande[0][0])
             url_google = gestion_demande[0][0]
             reponse_papy = self.papy_reponse(
                 gestion_demande[2], gestion_demande[3], gestion_demande[0])
