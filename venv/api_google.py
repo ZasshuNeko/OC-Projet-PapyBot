@@ -4,18 +4,21 @@
 import requests
 import re
 import json
+import configparser
 
 
 class Api_google:
     """Cette classe permet de créer les demandes avec l'API google."""
 
     def __init__(self):
+
         self.adresse_api = 'https://maps.googleapis.com/maps/api/place/textsearch/json?'
-        #self.key = 'AIzaSyD72ipLMIMctyuEMV2hsnWSqCozg8uE9Ok'
-        self.key = 'AIzaSyDZtyHzU8KfXtx9mvvmS3RXth4T-cjbnQ8'
         self.geometry_dict = {}
         self.geometry_tab = []
         self.reponse_tab = [] 
+        self.config = configparser.ConfigParser()
+        self.config.read('Lib/config.ini', 'utf8')
+        self.key = self.config.get('Google', 'Key')
 
     def search_api(self, demande):
         """Créer la demande et permet d'obtenir la réponse avec la variable
@@ -26,7 +29,6 @@ class Api_google:
         selection = self.geometry_json(reponseG)
 
         # Permet de sélectionner le lien vers l'image google map
-        #selection = selection_api(reponse)
         return selection
 
     def config_requests(self,demande,key):
@@ -38,9 +40,7 @@ class Api_google:
 
 
     def geometry_json(self,reponsejson):
-
         try:
-
             x = 0
             for dic in reponsejson['results']:
                 position = "position" + str(x)
@@ -53,11 +53,8 @@ class Api_google:
                 insert_localisation = dic['formatted_address']
                 self.reponse_tab.append(insert_localisation)
 
-            #----------------------------------
-            # A mettre dans un autre module
                 localisation_rue = insert_localisation.split(",")
                 rue = localisation_rue[0].strip()
-            #-----------------------------------
 
                 self.reponse_tab.append(rue)
         except:
