@@ -6,9 +6,10 @@ $(document).ready(function() {
 		var x = $(this).val().length;
 		var demande = $(this).val()
 		var re = new RegExp("[^0-9][a-zA-Z][^0-9]","g");
-		var reghex = new RegExp("^[<*]","g");
+		var reghex = new RegExp("<.*?>","g");
 		var resultat = re.exec(demande)
 		var result = reghex.exec(demande)
+		console.log(result)
 		
 		if (x<4){
 			$("#error").empty().removeClass("error");
@@ -23,7 +24,7 @@ $(document).ready(function() {
 			$("#error").empty().removeClass("error");
 			$("#error").append("Cette demande n'est pas valide !").addClass("error");
 		}
-		if (!result){
+		if (result){
 			$("#error").empty().removeClass("error");
 			$("#error").append("Ceci ressemble à un Hack !").addClass("error");
 		}
@@ -33,10 +34,12 @@ $(document).ready(function() {
 		var demande = $("#txt").val()
 		var x = $("#txt").val().length;
 		var re = new RegExp("[a-zA-Z]","i");
+		var reghex = new RegExp("<.*?>","g");
 		var resultat = re.exec(demande)
+		var result = reghex.exec(demande)
 		$("#error").empty().removeClass("error");
 
-		if((resultat) && (result) && (x > 4)) {
+		if((resultat) && (!result) && (x > 4)) {
 			$.ajax({
 				url : '/search_api',
 				data : {
@@ -61,7 +64,7 @@ $(document).ready(function() {
 					$('#historique').append(localisation);	
 				}
 				
-				if (url_google.lenght != 0){
+				if (jQuery.type(url_google[0]) != "object"){
 					$('#historique').append("<li class='list-group-item list-group-item-success' class='map' style='height:400px;'></li>")
 					$('.corps').each(function(){
 						var x = 0;
@@ -86,7 +89,7 @@ $(document).ready(function() {
 						}
 					});
 					$.each(JSON.parse(url_google), function(i,localisation){
-						console.log(localisation, "-------", localisation.lat)
+						console.log(localisation)
 						var marker = new google.maps.Marker({
 							position: new google.maps.LatLng(localisation.lat,localisation.lng),
 							map: map
