@@ -17,6 +17,7 @@ class Api_google:
         self.geometry_tab = []
         self.reponse_tab = [] 
         self.config = configparser.ConfigParser()
+        #.config.read('config.ini')
         self.config.read('venv/config.ini')
 
     def search_api(self, demande):

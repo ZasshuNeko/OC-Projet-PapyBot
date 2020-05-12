@@ -5,7 +5,7 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="{{url_for('static', filename='ajax_171.js')}}"></script>
+        <script src="{{url_for('static', filename='ajax_174.js')}}"></script>
         <script async defer src="https://maps.google.com/maps/api/js?key=AIzaSyDZtyHzU8KfXtx9mvvmS3RXth4T-cjbnQ8"></script>
 
         <title>{{ titre }}</title>
@@ -13,17 +13,17 @@
 
     <body>
         <div class="container-fluid">
-            <div class="row align-items-center">
+            <div class="row align-items-center d-flex justify-content-center">
                     <div class="col-md-4 img">
                         <img src="{{url_for('static', filename = 'img/projet7.png')}}" class="img-fluid float-left" alt="icone">
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-4">
                             <h1>{{titre_page}}</h1>
                     </div>
             </div>
             <div class="row"></div>
-            <div class="row">
-                <div class="col-md-12">
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-8">
                     <form id="formulaire">
                         <div class='form-group'>
                             <label for='corps'>Attention jeune homme papy te parle...</label>
@@ -42,11 +42,11 @@
                     </form>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-6">
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-4">
                     <p>MAZALEYRAT NICOLAS</p>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="text-right">
                         <p>Lien vers GIT</p>
                     </div>
