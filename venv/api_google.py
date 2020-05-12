@@ -17,13 +17,13 @@ class Api_google:
         self.geometry_tab = []
         self.reponse_tab = [] 
         self.config = configparser.ConfigParser()
-        self.config.read('Lib/config.ini', 'utf8')
-        self.key = self.config.get('Google', 'Key')
+        self.config.read('venv/config.ini')
 
     def search_api(self, demande):
         """Créer la demande et permet d'obtenir la réponse avec la variable
         selection."""
-        parametres = self.config_requests(demande,self.key)
+        key = self.config.get('GOOGLE','Key')
+        parametres = self.config_requests(demande,key)
         rtest = requests.get(url=self.adresse_api, params=parametres)
         reponseG = rtest.json()
         selection = self.geometry_json(reponseG)
