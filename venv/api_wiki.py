@@ -4,6 +4,7 @@
 
 from bs4 import BeautifulSoup
 import requests
+import json
 
 
 class Api_wiki:
@@ -16,7 +17,6 @@ class Api_wiki:
         self.action = "query"
         self.format = "json"
         self.liste = "search"
-
         self.session = requests.Session()
 
     def search_api(self, terme_recherche, autres):
@@ -32,30 +32,44 @@ class Api_wiki:
             autres)
         # Permet de tester la réponse
         chaine_content = try_content(reponse, terme_recherche)
-        if chaine_content[1]:
-            print('Il est vide !')
-        else:
-            tab_reponse_papy = creation_tableau_reponse(
-            chaine_content[0], terme_recherche, autres)
-            reponse_papy = " ".join(tab_reponse_papy)
+        #if chaine_content[1]:
+            #print('Il est vide !')
+        #else:
+            #tab_reponse_papy = creation_tableau_reponse(
+            #chaine_content[0], terme_recherche, autres)
+            #reponse_papy = " ".join(tab_reponse_papy)
 
         if not chaine_content[1]:
         # Permet de gérer la réponse
-            chaine_finale = reponse_papy
+            chaine_finale = informations(chaine_content[0],reponse[1])
+            #chaine_finale = reponse_papy
         else:
             chaine_finale = chaine_content[1]
 
+        print(chaine_finale)
         return chaine_finale
 
 
-def informations(information, pageid, nbr):
+def informations(information,type_section): #, pageid, nbr):
     """Création de la réponse de papy à partir de la réponse api."""
-    information_papy = gestion_chaine(information)
-    if nbr > 0:
-        information_papy = "Holalala je peux même te dire encore plus de chose ..." + information_papy
-    information_complementaire = ". Suit ce <a href='https://fr.wikipedia.org/?curid=" + \
-        pageid + "' >lien</a> et plus d'informaiton tu trouvera !"
-    reponse_papy = information_papy + information_complementaire + "</br>"
+    #information_papy = gestion_chaine(information)
+    if type_section == "pages":
+        for key in information.keys():
+            dict_extract = information.get(key)
+            chaine_content = dict_extract.get('extract')
+            pageid = dict_extract.get('pageid')
+            break
+    else:
+        #for key in information[0].keys():
+        #dict_extract = information[0].get(key)
+        chaine_content = information[0].get('snippet')
+        chaine_content = gestion_chaine(chaine_content)
+        pageid = information[0].get('pageid')
+    #if nbr > 0:
+        #information_papy = "Holalala je peux même te dire encore plus de chose ..." + information_papy
+    information_complementaire = " Suit ce <a href='https://fr.wikipedia.org/?curid=" + \
+        str(pageid) + "' >lien</a> et plus d'informaiton tu trouvera !"
+    reponse_papy = chaine_content + information_complementaire + "</br>"#information_papy + information_complementaire + "</br>"
 
     return reponse_papy
 
@@ -65,7 +79,7 @@ def creation_tableau_reponse(reponse_information, demande, *autres):
     x = 0
     tab_reponse_papy = []
     for information in reponse_information:
-        if str(information.get("title")).lower() == demande:
+        if str(information.get("title")).lower().find(demande):
            reponse_papy = recuperation_information(information, x)
            tab_reponse_papy.append(reponse_papy)
            x += 1
@@ -77,6 +91,12 @@ def creation_tableau_reponse(reponse_information, demande, *autres):
                         information, x)
                     tab_reponse_papy.append(reponse_papy)
                     x += 1
+            else:
+                if str(information.get("snippet")).lower().find(demande):
+                    reponse_papy = recuperation_information(information, x)
+                    tab_reponse_papy.append(reponse_papy)
+                    x += 1
+
         if x > 1:
             break
     return tab_reponse_papy
@@ -90,13 +110,27 @@ def recuperation_information(information, x):
     return reponse_papy
 
 
-def config_request_demande(chaine, action, liste, format_self):
+def config_request_demande_loc(chaine, action, liste, format_self):
     """Paramétre de l'API."""
     parametres = {
        "action": action,
        "format": format_self,
        "list": liste,
-       "srsearch": chaine
+       "srsearch": chaine,
+       "srlimit" : 1
+    }
+    return parametres
+
+def config_request_demande_D(chaine):
+    """Paramétre de l'API."""
+    parametres = {
+       "action": "query",
+       "format": "json",
+       "prop": "extracts",
+       "redirects": 1,
+       "exintro": 1,
+       "explaintext": 1,
+       "titles": chaine
     }
     return parametres
 
@@ -110,22 +144,25 @@ def api_wikipedia(
         session,
         *autres):
     """Envoie de la requête à l'API."""
-    if len(autres[0]) == 0:
-        parametres = config_request_demande(
-        terme_recherche, action, liste, format_api)
+    mot = terme_recherche[0]
+    print(mot) 
+    if mot.isdigit():#len(autres[0]) == 0:
+        parametres = config_request_demande_loc(
+            terme_recherche, action, liste, format_api)
+        section = "search"
         r = session.get(url=adresse_api, params=parametres)
     else:
-        parametres = config_request_demande(
-        autres[0], action, liste, format_api)
+        parametres = config_request_demande_D(terme_recherche)
         r = session.get(url=adresse_api, params=parametres)
+        section = "pages"
     reponse = r.json()
-    return reponse
+    return [reponse,section]
 
 
 def try_content(reponse, demande):
     """Cette fonction effectue un test sur les réponses de l'API."""
     try:
-       chaine_content = reponse['query']['search']
+        chaine_content = reponse[0]["query"][reponse[1]]
     except KeyError:
         error = True
         chaine_content = "Mais... je n'ai rien à te dire sur " + demande + " !"
@@ -146,4 +183,4 @@ def gestion_chaine(chaine):
         chaine = s.join(homonyme_chaine)
     chaine_parser = BeautifulSoup(chaine, 'html.parser')
     chaine_finale = chaine_parser.get_text()
-    return chaine_finale
+    return chaine_finale    

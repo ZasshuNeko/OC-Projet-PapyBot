@@ -63,8 +63,9 @@ $(document).ready(function() {
 				if (localisation.lenght != 0){
 					$('#historique').append(localisation);	
 				}
-				
 				if (jQuery.type(url_google[0]) != "object"){
+					var obj = jQuery.parseJSON(url_google);
+					console.log(obj.position0)
 					$('#historique').append("<li class='list-group-item list-group-item-success' class='map' style='height:400px;'></li>")
 					$('.corps').each(function(){
 						var x = 0;
@@ -75,7 +76,7 @@ $(document).ready(function() {
 					mapInit = "map" + x;
 					$("li").last().attr("id",mapInit)
 					map = new google.maps.Map(document.getElementById(mapInit), {
-						center: new google.maps.LatLng(48.852969, 2.349903),
+						center: new google.maps.LatLng(obj.position0.lat, obj.position0.lng),
 						zoom: 11,
 						mapTypeId: google.maps.MapTypeId.ROADMAP,
 						mapTypeControl: true,

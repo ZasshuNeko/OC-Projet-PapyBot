@@ -17,8 +17,8 @@ class Api_google:
         self.geometry_tab = []
         self.reponse_tab = [] 
         self.config = configparser.ConfigParser()
-        #.config.read('config.ini')
-        self.config.read('venv/config.ini')
+        self.config.read('config.ini')
+        #self.config.read('venv/config.ini')
 
     def search_api(self, demande):
         """Créer la demande et permet d'obtenir la réponse avec la variable

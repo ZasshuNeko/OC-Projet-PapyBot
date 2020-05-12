@@ -7,6 +7,7 @@ from api_wiki import Api_wiki
 from nltk.corpus import stopwords
 from nltk.stem.snowball import FrenchStemmer
 import unicodedata
+import json
 
 import nltk
 
@@ -40,9 +41,8 @@ class Traitement:
             reponse_wiki = search_terme
         else:
             reponse_apigoogle = self.api_google(search_terme)
-            if len(reponse_apigoogle) >= 3 and type(reponse_apigoogle) is list:
-                reponse_wiki = self.api_wiki(
-                    search_terme, reponse_apigoogle[2])
+            if len(reponse_apigoogle[0][0]) <= 52 and type(reponse_apigoogle) is list:
+                reponse_wiki = self.api_wiki(reponse_apigoogle[2])
             else:
                 reponse_wiki = self.api_wiki(search_terme)
         return [
@@ -89,6 +89,9 @@ class Traitement:
                     terme = " Quoi répète plus fort ?!!"
                     error = True
                 break
+            elif len(filtered_words) == 1:
+                if mot not in self.liste_terme:
+                    terme = mot                
         return [terme, error]
 
     def api_google(self, terme_important):

@@ -63,9 +63,8 @@ $(document).ready(function() {
 				if (localisation.lenght != 0){
 					$('#historique').append(localisation);	
 				}
-				
-				console.log(jQuery.type(url_google[0]))
 				if (jQuery.type(url_google[0]) != "object"){
+					var obj = jQuery.parseJSON(url_google);
 					$('#historique').append("<li class='list-group-item list-group-item-success' class='map' style='height:400px;'></li>")
 					$('.corps').each(function(){
 						var x = 0;
@@ -76,7 +75,7 @@ $(document).ready(function() {
 					mapInit = "map" + x;
 					$("li").last().attr("id",mapInit)
 					map = new google.maps.Map(document.getElementById(mapInit), {
-						center: new google.maps.LatLng(48.852969, 2.349903),
+						center: new google.maps.LatLng(obj.position0.lat, obj.position0.lng),
 						zoom: 11,
 						mapTypeId: google.maps.MapTypeId.ROADMAP,
 						mapTypeControl: true,
@@ -90,7 +89,7 @@ $(document).ready(function() {
 						}
 					});
 					$.each(JSON.parse(url_google), function(i,localisation){
-						console.log(localisation, "-------", localisation.lat)
+						console.log(localisation)
 						var marker = new google.maps.Marker({
 							position: new google.maps.LatLng(localisation.lat,localisation.lng),
 							map: map
