@@ -32,17 +32,9 @@ class Api_wiki:
             autres)
         # Permet de tester la réponse
         chaine_content = try_content(reponse, terme_recherche)
-        #if chaine_content[1]:
-            #print('Il est vide !')
-        #else:
-            #tab_reponse_papy = creation_tableau_reponse(
-            #chaine_content[0], terme_recherche, autres)
-            #reponse_papy = " ".join(tab_reponse_papy)
-
         if not chaine_content[1]:
         # Permet de gérer la réponse
             chaine_finale = informations(chaine_content[0],reponse[1])
-            #chaine_finale = reponse_papy
         else:
             chaine_finale = chaine_content[1]
 
@@ -60,46 +52,13 @@ def informations(information,type_section): #, pageid, nbr):
             pageid = dict_extract.get('pageid')
             break
     else:
-        #for key in information[0].keys():
-        #dict_extract = information[0].get(key)
         chaine_content = information[0].get('snippet')
         chaine_content = gestion_chaine(chaine_content)
         pageid = information[0].get('pageid')
-    #if nbr > 0:
-        #information_papy = "Holalala je peux même te dire encore plus de chose ..." + information_papy
     information_complementaire = " Suit ce <a href='https://fr.wikipedia.org/?curid=" + \
         str(pageid) + "' >lien</a> et plus d'informaiton tu trouvera !"
-    reponse_papy = chaine_content + information_complementaire + "</br>"#information_papy + information_complementaire + "</br>"
-
+    reponse_papy = chaine_content + information_complementaire + "</br>"
     return reponse_papy
-
-
-def creation_tableau_reponse(reponse_information, demande, *autres):
-    """Création du tableau pour générer la réponse."""
-    x = 0
-    tab_reponse_papy = []
-    for information in reponse_information:
-        if str(information.get("title")).lower().find(demande):
-           reponse_papy = recuperation_information(information, x)
-           tab_reponse_papy.append(reponse_papy)
-           x += 1
-        else:
-            if len(autres[0]) > 0:
-                if str(information.get("title")).lower(
-                ) == autres[0][0] or information.get("snippet").find(autres[0][0]):
-                    reponse_papy = recuperation_information(
-                        information, x)
-                    tab_reponse_papy.append(reponse_papy)
-                    x += 1
-            else:
-                if str(information.get("snippet")).lower().find(demande):
-                    reponse_papy = recuperation_information(information, x)
-                    tab_reponse_papy.append(reponse_papy)
-                    x += 1
-
-        if x > 1:
-            break
-    return tab_reponse_papy
 
 
 def recuperation_information(information, x):
@@ -130,6 +89,7 @@ def config_request_demande_D(chaine):
        "redirects": 1,
        "exintro": 1,
        "explaintext": 1,
+       "exchars": "575",
        "titles": chaine
     }
     return parametres
@@ -145,8 +105,7 @@ def api_wikipedia(
         *autres):
     """Envoie de la requête à l'API."""
     mot = terme_recherche[0]
-    print(mot) 
-    if mot.isdigit():#len(autres[0]) == 0:
+    if mot.isdigit():
         parametres = config_request_demande_loc(
             terme_recherche, action, liste, format_api)
         section = "search"

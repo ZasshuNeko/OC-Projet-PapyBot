@@ -27,8 +27,8 @@ class Testmain:
         self.fichierjson = script_json.Sourcejson()
 
 
-    def json(sefl):
-        sortie_json = fichierjson.creation_json("Test demande",["test",True,"Test"])
+    def test_json(self):
+        sortie_json = self.fichierjson.creation_json("Test demande",[[],"Test","Un jeune bien élevé comme on les apprécie tant ! ",False])
         print(sortie_json)
 
     def test_reponse_papy_add(self):
@@ -45,14 +45,14 @@ class Testmain:
 
     def test_correction_demande(self):
         assert self.correction == [["où", "est", "openclassrooms"],
-                                   'Petit malotrue ! On salut son ainé avant de demander ... ']
+                                   'Petit malotru ! On salue son ainé avant de demander ... ']
 
     def test_salutation(self):
         assert self.salutation == 'Un jeune bien élevé comme on les apprécie tant ! '
 
     def test_chercher_terme(self):
         terme = self.traitement.chercher_termes(["quoi", "velo"])
-        assert terme == ["velo", False]
+        assert terme == ["velo", False, False]
 
 
 class MockReponseWiki:
@@ -76,7 +76,7 @@ def test_request_wiki(monkeypatch):
         requests,
         ((),
          ))
-    assert result['Pytest'] == 'Réponse test'
+    assert result[0]['Pytest'] == 'Réponse test'
 
 class MockReponseGoogle:
     @staticmethod

@@ -8,23 +8,21 @@ from nltk.corpus import stopwords
 from nltk.stem.snowball import FrenchStemmer
 import unicodedata
 import json
-
+from random import randint
+import configparser
 import nltk
 
 nltk.data.path.append('nltk_data/')
 #nltk.download('stopwords')
 class Traitement:
     def __init__(self):
-        self.liste_terme = [
-            "connais",
-            "connaitre",
-            "connait",
-            "sais",
-            "sait",
-            "savoir",
-            "quoi",
-            "où",
-            "adresse"]
+        self.config = configparser.ConfigParser()
+        self.config.read('config.ini','utf8')
+        self.liste_terme = self.config.get('LISTE','terme')
+        self.liste_temporelle = self.config.get('LISTE','temporelle')
+        self.liste_histoire = self.config.get('LISTE','histoire')
+        self.liste_aleatoire = self.config.get('LISTE','terme_aleatoire')
+        self.liste_mapoff = self.config.get('LISTE','map')
 
     def gestion_question(self, demande):
         """Charge la question de l'utilisateur et de la traiter et de l'envoyer
@@ -33,23 +31,47 @@ class Traitement:
         # important et ramène s'il y a une salutation
         correctif_demande = self.correction_demande(demande)
         liste_demande = correctif_demande[0]
-        terme_selection = self.chercher_termes(liste_demande)
-        search_terme = terme_selection[0]
 
+        if len(liste_demande) == 1:
+            reponse_apigoogle = []
+            reponse_wiki = []
+            terme_selection = False
+
+            return [
+                reponse_apigoogle,
+                reponse_wiki,
+                correctif_demande[1],
+                terme_selection]
+        else:
+            terme_selection = self.chercher_termes(liste_demande)
+            search_terme = terme_selection[0]
+
+            reponse_api = self.tris_api(terme_selection,search_terme)
+            reponse_apigoogle = reponse_api[0]
+            reponse_wiki = reponse_api[1]
+        
+            return [
+                reponse_apigoogle,
+                reponse_wiki,
+                correctif_demande[1],
+                terme_selection[1]]
+
+    def tris_api(self,terme_selection,search_terme):
         if terme_selection[1]:
             reponse_apigoogle = []
             reponse_wiki = search_terme
         else:
-            reponse_apigoogle = self.api_google(search_terme)
-            if len(reponse_apigoogle[0][0]) <= 52 and type(reponse_apigoogle) is list:
-                reponse_wiki = self.api_wiki(reponse_apigoogle[2])
+            if terme_selection[2]:
+                terme_wiki = search_terme
+                reponse_apigoogle = self.api_google(search_terme)
+                if len(reponse_apigoogle) > 2 and type(reponse_apigoogle) is list:
+                    terme_wiki = reponse_apigoogle[2]
             else:
-                reponse_wiki = self.api_wiki(search_terme)
-        return [
-            reponse_apigoogle,
-            reponse_wiki,
-            correctif_demande[1],
-            terme_selection[1]]
+                terme_wiki = search_terme
+                reponse_apigoogle = []
+            reponse_wiki = self.api_wiki(terme_wiki)
+        return [reponse_apigoogle,reponse_wiki]
+
 
     def correction_demande(self, demande):
         """En utilisant nltk nous scindons la demande de l'utilisateur en liste
@@ -76,23 +98,35 @@ class Traitement:
         """Permet de déterminer s'il y a un terme intéréssant pour l'API
         wikipedia, cela se base sur différent terme que l'on va chercher."""
         error = False
+        maping = True
         # Retire les stopword de la liste des mots fait à partir de la
         # demande
         filtered_words = [
             word for word in liste_demande if word not in stopwords.words('french')]
         for index, mot in enumerate(filtered_words):
             if mot in self.liste_terme:
-
                 try:
-                    terme = filtered_words[index + 1]
+                    index_second = filtered_words[index + 1]
+                    print(index_second)
+                    if index_second not in self.liste_temporelle and index_second not in self.liste_histoire:
+                        terme = index_second
+                        if mot in self.liste_mapoff:
+                            maping = False
+                    elif index_second in self.liste_temporelle and index_second not in self.liste_histoire:
+                        terme = "Tu sais ce qui se passera plus tard est un mystère et parfois il faut le chérir..."
+                        error = True
+                    elif index_second in self.liste_histoire:
+                        index_terme = randint(0,11)
+                        terme = self.liste_aleatoire[index_terme]
+                        maping = False
                 except BaseException:
                     terme = " Quoi répète plus fort ?!!"
                     error = True
                 break
             elif len(filtered_words) == 1:
                 if mot not in self.liste_terme:
-                    terme = mot                
-        return [terme, error]
+                    terme = mot              
+        return [terme, error,maping]
 
     def api_google(self, terme_important):
         """Permet d'initialiser la classe gérant l'api google et de l'intéroger
@@ -113,5 +147,5 @@ class Traitement:
         if terme == "salut" or terme == "bonjour" or terme == "yo":
             salutation = "Un jeune bien élevé comme on les apprécie tant ! "
         else:
-            salutation = "Petit malotrue ! On salut son ainé avant de demander ... "
+            salutation = "Petit malotru ! On salue son ainé avant de demander ... "
         return salutation
