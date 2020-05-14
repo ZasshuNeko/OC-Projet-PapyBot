@@ -5,8 +5,8 @@
 from flask import Flask, render_template, request, jsonify
 import json
 
-from traitement import Traitement
-from fichierjson import Sourcejson
+from app.traitement import Traitement
+from app.fichierjson import Sourcejson
 
 app = Flask(__name__, static_url_path='/static')
 

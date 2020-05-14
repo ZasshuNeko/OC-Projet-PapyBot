@@ -29,30 +29,24 @@ class Testmain:
 
     def test_json(self):
         sortie_json = self.fichierjson.creation_json("Test demande",[[],"Test","Un jeune bien élevé comme on les apprécie tant ! ",False])
-        print(sortie_json)
+        test_sortie = json.loads(sortie_json)
+        assert test_sortie["url_google"] == [{}]
 
-    def test_reponse_papy_add(self):
+    def test_reponse_papy(self):
         reponse_papy =  self.fichierjson.papy_reponse(
             'test', False, [
                 "lien", "25 rue test,75000 Paris", "add"])
-        assert reponse_papy == "<li class='list-group-item list-group-item-success'>Papy : test</br>Alors mon petit ! Sache que cela est situé 25 rue test code postal 75000 Paris</li>"
-
-    def test_reponse_papy_nom(self):
-        reponse_papy =  self.fichierjson.papy_reponse(
-            "test", False, [
-                "lien", "TrucTruc,25 rue test,75000 Paris", "add"])
-        assert reponse_papy == "<li class='list-group-item list-group-item-success'>Papy : test</br>Alors mon petit ! Sache que TrucTruc est situé 25 rue test code postal 75000 Paris</li>"
+        assert reponse_papy == "<li class='list-group-item list-group-item-success'>Papy : test</br>Alors mon petit ! Sache que cela est situé 25 rue test,75000 Paris</li>"
 
     def test_correction_demande(self):
-        assert self.correction == [["où", "est", "openclassrooms"],
-                                   'Petit malotru ! On salue son ainé avant de demander ... ']
+        assert self.correction == ["où", "est", "openclassrooms"]
 
     def test_salutation(self):
         assert self.salutation == 'Un jeune bien élevé comme on les apprécie tant ! '
 
     def test_chercher_terme(self):
         terme = self.traitement.chercher_termes(["quoi", "velo"])
-        assert terme == ["velo", False, False]
+        assert terme == ["velo ", False, False]
 
 
 class MockReponseWiki:
@@ -69,9 +63,6 @@ def test_request_wiki(monkeypatch):
     monkeypatch.setattr(requests, "get", mock_get)
     result = script_wiki.api_wikipedia(
         "TEST",
-        "query",
-        "search",
-        "json",
         "https://fr.wikipedia.org/w/api.php",
         requests,
         ((),

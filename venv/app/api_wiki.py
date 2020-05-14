@@ -24,9 +24,6 @@ class Api_wiki:
          demande."""
         reponse = api_wikipedia(
             terme_recherche,
-            self.action,
-            self.liste,
-            self.format,
             self.adresse_api,
             self.session,
             autres)
@@ -45,6 +42,7 @@ class Api_wiki:
 def informations(information,type_section): #, pageid, nbr):
     """Création de la réponse de papy à partir de la réponse api."""
     #information_papy = gestion_chaine(information)
+    print(information,type_section)
     if type_section == "pages":
         for key in information.keys():
             dict_extract = information.get(key)
@@ -69,12 +67,12 @@ def recuperation_information(information, x):
     return reponse_papy
 
 
-def config_request_demande_loc(chaine, action, liste, format_self):
+def config_request_demande_loc(chaine):
     """Paramétre de l'API."""
     parametres = {
-       "action": action,
-       "format": format_self,
-       "list": liste,
+       "action": "query",
+       "format": "json",
+       "list": "search",
        "srsearch": chaine,
        "srlimit" : 1
     }
@@ -97,23 +95,23 @@ def config_request_demande_D(chaine):
 
 def api_wikipedia(
         terme_recherche,
-        action,
-        liste,
-        format_api,
         adresse_api,
         session,
         *autres):
     """Envoie de la requête à l'API."""
     mot = terme_recherche[0]
     if mot.isdigit():
-        parametres = config_request_demande_loc(
-            terme_recherche, action, liste, format_api)
+        parametres = config_request_demande_loc(terme_recherche)
         section = "search"
         r = session.get(url=adresse_api, params=parametres)
     else:
         parametres = config_request_demande_D(terme_recherche)
         r = session.get(url=adresse_api, params=parametres)
         section = "pages"
+        verification = try_page(r,section,terme_recherche,adresse_api,session)
+        if len(verification) != 0: 
+            r = verification[0]
+            section = verification[1]
     reponse = r.json()
     return [reponse,section]
 
@@ -127,8 +125,24 @@ def try_content(reponse, demande):
         chaine_content = "Mais... je n'ai rien à te dire sur " + demande + " !"
     else:
        error = False
-
     return [chaine_content, error]
+
+def try_page(r,section,terme_recherche,adresse_api,session):
+    
+    reponse = r.json()
+    try:
+        chaine_content = reponse["query"][section]
+        if len(chaine_content.get('-1')) > 0:
+            parametres = config_request_demande_loc(terme_recherche)
+            section = "search"
+            r = session.get(url=adresse_api, params=parametres)
+            return [r,section]
+    except:
+        return []
+
+
+
+
 
 
 def gestion_chaine(chaine):

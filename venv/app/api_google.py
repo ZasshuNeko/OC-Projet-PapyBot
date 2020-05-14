@@ -17,7 +17,7 @@ class Api_google:
         self.geometry_tab = []
         self.reponse_tab = [] 
         self.config = configparser.ConfigParser()
-        self.config.read('config.ini')
+        self.config.read('app/config.ini')
 
     def search_api(self, demande):
         """Créer la demande et permet d'obtenir la réponse avec la variable
@@ -27,7 +27,6 @@ class Api_google:
         rtest = requests.get(url=self.adresse_api, params=parametres)
         reponseG = rtest.json()
         selection = self.geometry_json(reponseG)
-        print(selection)
         # Permet de sélectionner le lien vers l'image google map
         return selection
 

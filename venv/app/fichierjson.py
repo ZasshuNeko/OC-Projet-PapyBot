@@ -60,11 +60,7 @@ class Sourcejson():
             selection_adresse = self.try_adress(adresse)
             if len(selection_adresse) >= 2 and type(selection_adresse) is list:
                 lieu = selection_adresse[1]
-                ss_chaine = str(lieu[0:1])
-                if ss_chaine.isalpha() == False:
-                    indication_papy = self.reponse_add(lieu)
-                else:
-                    indication_papy = self.reponse_nom(lieu)
+                indication_papy = self.reponse(lieu)
             elif type(selection_adresse) is str:
                 indication_papy = self.success + \
                     selection_adresse + self.end
@@ -78,38 +74,12 @@ class Sourcejson():
                 salutation + "</br>" + indication_papy + self.end
         return indication_papy
 
-    def reponse_nom(self, adresse):
+    def reponse(self, adresse):
         """Réponse formaté avec nom devant l'adresse."""
-        texte_papy = adresse.split(",")
-        x = 0
-        if len(texte_papy) > 1:
-            while x <= len(adresse):
-                if x == 0:
-                    indication_papy = "Alors mon petit ! Sache que " + \
-                        texte_papy[x]
-                elif x == 1:
-                    indication_papy = indication_papy + \
-                        " est situé " + texte_papy[x]
-                elif x == 2:
-                    indication_papy = indication_papy + \
-                        " code postal " + texte_papy[x]
-                x += 1
+        indication_papy = "Alors mon petit ! Sache que cela est situé " + \
+                        adresse
         return indication_papy
 
-    def reponse_add(self, adresse):
-        """Réponse formaté sans le nom de la recherche."""
-        texte_papy = adresse.split(",")
-        x = 0
-        if len(texte_papy) > 1:
-            while x <= len(adresse):
-                if x == 0:
-                    indication_papy = "Alors mon petit ! Sache que cela est situé " + \
-                        texte_papy[x]
-                elif x == 1:
-                    indication_papy = indication_papy + \
-                        " code postal " + texte_papy[x]
-                x += 1
-        return indication_papy
 
     def try_adress(self,adresse):
         try:
