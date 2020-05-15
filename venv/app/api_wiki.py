@@ -35,14 +35,12 @@ class Api_wiki:
         else:
             chaine_finale = chaine_content[1]
 
-        print(chaine_finale)
         return chaine_finale
 
 
 def informations(information,type_section): #, pageid, nbr):
     """Création de la réponse de papy à partir de la réponse api."""
     #information_papy = gestion_chaine(information)
-    print(information,type_section)
     if type_section == "pages":
         for key in information.keys():
             dict_extract = information.get(key)
@@ -56,14 +54,6 @@ def informations(information,type_section): #, pageid, nbr):
     information_complementaire = " Suit ce <a href='https://fr.wikipedia.org/?curid=" + \
         str(pageid) + "' >lien</a> et plus d'informaiton tu trouvera !"
     reponse_papy = chaine_content + information_complementaire + "</br>"
-    return reponse_papy
-
-
-def recuperation_information(information, x):
-    """Récupération des informations dans le json."""
-    information_selection = information.get("snippet")
-    pageid = str(information.get("pageid"))
-    reponse_papy = informations(information_selection, pageid, x)
     return reponse_papy
 
 
@@ -139,11 +129,6 @@ def try_page(r,section,terme_recherche,adresse_api,session):
             return [r,section]
     except:
         return []
-
-
-
-
-
 
 def gestion_chaine(chaine):
     """Permet de récupérer la totalité ou partie de la réponse selon la demande

@@ -11,20 +11,24 @@ import requests
 import requests_mock
 from io import BytesIO
 
-import traitement as script
-import fichierjson as script_json
-import api_wiki as script_wiki
-import api_google as script_google
+import app.traitement as script
+import app.fichierjson as script_json
+import app.api_wiki as script_wiki
+import app.api_google as script_google
 
 
 class Testmain:
 
     def setup_method(self):
+        self.wiki = script_wiki.Api_wiki()
+        self.google = script_google.Api_google()
         self.traitement = script.Traitement()
         self.correction = self.traitement.correction_demande(
             "Ou est OpenClassrooms ?")
         self.salutation = self.traitement.salutation_utilisateur("bonjour")
         self.fichierjson = script_json.Sourcejson()
+
+    #Test fichier du fichier nommé fichierjson
 
 
     def test_json(self):
@@ -38,6 +42,8 @@ class Testmain:
                 "lien", "25 rue test,75000 Paris", "add"])
         assert reponse_papy == "<li class='list-group-item list-group-item-success'>Papy : test</br>Alors mon petit ! Sache que cela est situé 25 rue test,75000 Paris</li>"
 
+    #Test fichier du fichier nommé traitement
+
     def test_correction_demande(self):
         assert self.correction == ["où", "est", "openclassrooms"]
 
@@ -48,39 +54,45 @@ class Testmain:
         terme = self.traitement.chercher_termes(["quoi", "velo"])
         assert terme == ["velo ", False, False]
 
+    def test_gestion_question(self):
+        demande_error = "Mot" #Mot unique
+        demande_valide = "Ou est paris ?"
 
-class MockReponseWiki:
-    @staticmethod
-    def json():
-        return {'Pytest': 'Réponse test'}
+        reponse_error = self.traitement.gestion_question(demande_error)
+        reponse_valide = self.traitement.gestion_question(demande_valide)
 
+        assert reponse_error[0] == [] and len(reponse_valide[0]) >= 1
 
-def test_request_wiki(monkeypatch):
+    #Test fichier du fichier nommé api_google
 
-    def mock_get(*args, **kwargs):
-        return MockReponseWiki()
+    def test_geometry_google(self):
+        json_test = json.loads('{"html_attributions": [], "results": [{"formatted_address": "test, test", "geometry": {"location": {"lat": "test", "lng": "test"}}}], "status": "OK"}')
+        reponse = self.google.geometry_json(json_test)
+        assert reponse[2] == 'test'
 
-    monkeypatch.setattr(requests, "get", mock_get)
-    result = script_wiki.api_wikipedia(
-        "TEST",
-        "https://fr.wikipedia.org/w/api.php",
-        requests,
-        ((),
-         ))
-    assert result[0]['Pytest'] == 'Réponse test'
-
-class MockReponseGoogle:
-    @staticmethod
-    def json():
-        return {'results':'test'}
+    #Test fichier du fichier nommé api_wiki
 
 
-def test_request_google(monkeypatch):
+    def test_wiki_informations_snippet(self):
+        section = 'snippet'
 
-    def mock_get(*args, **kwargs):
-        return MockReponseGoogle()
+        info = [{'pageid': 00000, 'snippet': 'Pif Paf Pouf'}]
+        reponse = script_wiki.informations(info,section)
+        assert reponse == info[0]['snippet'] + " Suit ce <a href='https://fr.wikipedia.org/?curid=" + str(info[0]['pageid']) + "' >lien</a> et plus d'informaiton tu trouvera !</br>"
+    
+    def test_wiki_informations_pages(self):
+        section = 'pages'
+        info = {'test': {'pageid': 11111, 'extract': "Test"}}
+        reponse = script_wiki.informations(info,section)
+        assert reponse == info['test']['extract'] + " Suit ce <a href='https://fr.wikipedia.org/?curid=" + str(info['test']['pageid']) + "' >lien</a> et plus d'informaiton tu trouvera !</br>"
 
-    monkeypatch.setattr(requests, "get", mock_get)
-    script_ini = script_google.Api_google()
-    result = script_ini.search_api('test')
-    assert type(result) is list
+    def test_try_wiki(self):
+        tab = [{"query":{"snippet":"test"}},"snippet"]
+        reponse = script_wiki.try_content(tab,'[test]')
+        assert reponse[1] == False and reponse[0] == "test"
+
+    def test_gestion_chaine(self):
+        mot = "test"
+        phrase = "homonymes ///////***/*/**--*/*/." + mot + " : <div>" + mot + "</div> / <span>" + mot + "</span>"
+        reponse = script_wiki.gestion_chaine(phrase)
+        assert reponse == mot + " : " + mot + " / " + mot
