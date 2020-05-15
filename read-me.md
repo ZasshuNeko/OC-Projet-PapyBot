@@ -30,19 +30,19 @@ IV. Executer le programme
 =========================
 
 Pour une exécution local, lancé l'environnement virtuel Flask puis placez vous dans le dossier venv. 
-Lancer l'application en executant 
+Lancer l'application en executant :
 
-`export FLASK_APP=main.py`
+`set FLASK_APP=main.py`
 `python -m flask run`
 
 Une fois lancé, rendez-vous sur votre adresse local pour profiter de l'application.
 
 Pour une exécution sur héroku, envoyer le contenu du dossier venv sur héroku pour qu'il déploie et mette en ligne l'application.
 
-VI. Le programme
+V. Le programme
 ================
 
-Le programme se présente d'une unique page html. 
+Le programme est composé d'une unique page html. 
 Utiliser la zone de texte du formulaire pour poser la question.
 
 Toutes questions tel que : Où est xxxx ?
@@ -51,10 +51,23 @@ Sera traité en fournissant une map avec les différentes adresse trouvé et une
 Toutes question tel que : C'est quoi xxxx ?
 Sera traité en fournissant des informations sur l'objet de votre demande et aucune carte ne sera montré
 
-Vous pouvez aussi lui indiquer un mot unique, il sera alors traité comme une demande d'emplacement avec carte et définition.
+Les demandes uniques sont rejeté.
 Les autres questions qui peuvent vous venir à l'esprit sont traité de manière aléatoire par le bot et pensez bien à le saluer à chaque question sinon il pourrait se facher.
 
-Les chiffres sont interdit et renvois un raffraichissement de la page.
+Les chiffres sont interdit et renvois un refus du bot sans créer de rafraichissement.
+
+VI. Les tests
+=============
+
+Les tests pour le programme se trouve dans le dossier pytest.
+La couverture des ces tests est de 85% et ils peuvent être executer avec ces lignes :
+pytest -v -s pytest\test_projet.py
+pytest -v -s pytest\test_api.py
+
+Pour executer le test de couverture :
+pytest --cov=app --cov-report html pytest/
+
+Vous trouverez les résultats dans le dossier venv/htmlco
 
 
 *##English version*
@@ -86,10 +99,43 @@ Copy the program directory with the command: `git clone https: // github.com / Z
 IV. Execute the program
 =========================
 
-Once the directory has been copied to the chosen location, open the command prompt and go to the directory
-`cd chemin_du_repertoir`
-Then execute the program by typing * OFF_main.py *
+For local execution, launch the Flask virtual environment then go to the venv folder.
+Launch the application by executing:
+
+`set FLASK_APP = main.py`
+`python -m flask run`
+
+Once launched, go to your local address to take advantage of the application.
+
+For an execution on heroku, send the content of the venv folder on heroku so that it deploys and puts the application online.
 
 V. The program
 ================
+
+The program consists of a single html page.
+Use the text box on the form to ask the question.
+
+Any questions such as: Où est xxxx?
+Will be processed by providing a map with the different addresses found and an explanation from the bot.
+
+Any question such as: C'est quoi xxxx?
+Will be processed by providing information about the subject of your request and no cards will be shown
+
+Single requests are rejected.
+The other questions which can come to your mind are dealt with randomly by the bot and remember to greet him with each question otherwise he might get angry.
+
+Numbers are prohibited and return a bot refusal without creating a refresh.
+
+VI. The tests
+==============
+
+The tests for the program can be found in the pytest folder.
+The coverage of these tests is 85% and they can be run with these lines:
+pytest -v -s pytest \ test_projet.py
+pytest -v -s pytest \ test_api.py
+
+To run the coverage test:
+pytest --cov = app --cov-report html pytest /
+
+You will find the results in the folder venv / htmlco
 

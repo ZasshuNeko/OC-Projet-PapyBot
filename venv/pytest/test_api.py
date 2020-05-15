@@ -3,14 +3,16 @@
 """Ce Fichier fichier contient les tests API du projet 7
 """
 
+import sys
+from io import BytesIO
+
 import mock
 import requests
 import requests_mock
-from io import BytesIO
-import sys
 
-import app.api_wiki as script_wiki
 import app.api_google as script_google
+import app.api_wiki as script_wiki
+
 
 class MockReponseWiki:
     @staticmethod

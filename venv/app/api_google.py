@@ -1,10 +1,11 @@
 # -*-coding:Utf-8 -*
 
 """Ce Fichier fichier contient les fonctionnalités de l'API google."""
-import requests
-import re
-import json
 import configparser
+import json
+import re
+
+import requests
 
 
 class Api_google:
@@ -15,30 +16,29 @@ class Api_google:
         self.adresse_api = 'https://maps.googleapis.com/maps/api/place/textsearch/json?'
         self.geometry_dict = {}
         self.geometry_tab = []
-        self.reponse_tab = [] 
+        self.reponse_tab = []
         self.config = configparser.ConfigParser()
         self.config.read('app/config.ini')
 
     def search_api(self, demande):
         """Créer la demande et permet d'obtenir la réponse avec la variable
         selection."""
-        key = self.config.get('GOOGLE','Key')
-        parametres = self.config_requests(demande,key)
+        key = self.config.get('GOOGLE', 'Key')
+        parametres = self.config_requests(demande, key)
         rtest = requests.get(url=self.adresse_api, params=parametres)
         reponseG = rtest.json()
         selection = self.geometry_json(reponseG)
         # Permet de sélectionner le lien vers l'image google map
         return selection
 
-    def config_requests(self,demande,key):
-        parametres = {'query' : demande,
-        'region' : 'fr',
-        'key' : key }
+    def config_requests(self, demande, key):
+        parametres = {'query': demande,
+                      'region': 'fr',
+                      'key': key}
 
         return parametres
 
-
-    def geometry_json(self,reponsejson):
+    def geometry_json(self, reponsejson):
         try:
             x = 0
             for dic in reponsejson['results']:
@@ -56,9 +56,7 @@ class Api_google:
                 rue = localisation_rue[0].strip()
 
                 self.reponse_tab.append(rue)
-        except:
+        except BaseException:
             self.reponse_tab = ['error']
 
         return self.reponse_tab
-
-

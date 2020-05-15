@@ -2,11 +2,12 @@
 
 """Ce Fichier fichier contient le corp de l'application."""
 
-from flask import Flask, render_template, request, jsonify
 import json
 
-from app.traitement import Traitement
+from flask import Flask, jsonify, render_template, request
+
 from app.fichierjson import Sourcejson
+from app.traitement import Traitement
 
 app = Flask(__name__, static_url_path='/static')
 

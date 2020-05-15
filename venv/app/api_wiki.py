@@ -2,9 +2,10 @@
 
 """Ce Fichier fichier contient les fonctionnalités de l'API wikipedia."""
 
-from bs4 import BeautifulSoup
-import requests
 import json
+
+import requests
+from bs4 import BeautifulSoup
 
 
 class Api_wiki:
@@ -21,7 +22,7 @@ class Api_wiki:
 
     def search_api(self, terme_recherche, autres):
         """Permet d'éffectuer la recherche représenté par la variable
-         demande."""
+        demande."""
         reponse = api_wikipedia(
             terme_recherche,
             self.adresse_api,
@@ -30,15 +31,15 @@ class Api_wiki:
         # Permet de tester la réponse
         chaine_content = try_content(reponse, terme_recherche)
         if not chaine_content[1]:
-        # Permet de gérer la réponse
-            chaine_finale = informations(chaine_content[0],reponse[1])
+            # Permet de gérer la réponse
+            chaine_finale = informations(chaine_content[0], reponse[1])
         else:
             chaine_finale = chaine_content[1]
 
         return chaine_finale
 
 
-def informations(information,type_section): #, pageid, nbr):
+def informations(information, type_section):  # , pageid, nbr):
     """Création de la réponse de papy à partir de la réponse api."""
     #information_papy = gestion_chaine(information)
     if type_section == "pages":
@@ -60,25 +61,26 @@ def informations(information,type_section): #, pageid, nbr):
 def config_request_demande_loc(chaine):
     """Paramétre de l'API."""
     parametres = {
-       "action": "query",
-       "format": "json",
-       "list": "search",
-       "srsearch": chaine,
-       "srlimit" : 1
+        "action": "query",
+        "format": "json",
+        "list": "search",
+        "srsearch": chaine,
+        "srlimit": 1
     }
     return parametres
+
 
 def config_request_demande_D(chaine):
     """Paramétre de l'API."""
     parametres = {
-       "action": "query",
-       "format": "json",
-       "prop": "extracts",
-       "redirects": 1,
-       "exintro": 1,
-       "explaintext": 1,
-       "exchars": "575",
-       "titles": chaine
+        "action": "query",
+        "format": "json",
+        "prop": "extracts",
+        "redirects": 1,
+        "exintro": 1,
+        "explaintext": 1,
+        "exchars": "575",
+        "titles": chaine
     }
     return parametres
 
@@ -98,12 +100,13 @@ def api_wikipedia(
         parametres = config_request_demande_D(terme_recherche)
         r = session.get(url=adresse_api, params=parametres)
         section = "pages"
-        verification = try_page(r,section,terme_recherche,adresse_api,session)
-        if len(verification) != 0: 
+        verification = try_page(
+            r, section, terme_recherche, adresse_api, session)
+        if len(verification) != 0:
             r = verification[0]
             section = verification[1]
     reponse = r.json()
-    return [reponse,section]
+    return [reponse, section]
 
 
 def try_content(reponse, demande):
@@ -114,11 +117,12 @@ def try_content(reponse, demande):
         error = True
         chaine_content = "Mais... je n'ai rien à te dire sur " + demande + " !"
     else:
-       error = False
+        error = False
     return [chaine_content, error]
 
-def try_page(r,section,terme_recherche,adresse_api,session):
-    
+
+def try_page(r, section, terme_recherche, adresse_api, session):
+
     reponse = r.json()
     try:
         chaine_content = reponse["query"][section]
@@ -126,9 +130,10 @@ def try_page(r,section,terme_recherche,adresse_api,session):
             parametres = config_request_demande_loc(terme_recherche)
             section = "search"
             r = session.get(url=adresse_api, params=parametres)
-            return [r,section]
-    except:
+            return [r, section]
+    except BaseException:
         return []
+
 
 def gestion_chaine(chaine):
     """Permet de récupérer la totalité ou partie de la réponse selon la demande
@@ -141,4 +146,4 @@ def gestion_chaine(chaine):
         chaine = s.join(homonyme_chaine)
     chaine_parser = BeautifulSoup(chaine, 'html.parser')
     chaine_finale = chaine_parser.get_text()
-    return chaine_finale    
+    return chaine_finale
