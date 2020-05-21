@@ -1,6 +1,7 @@
 # -*-coding:Utf-8 -*
 
-"""Ce Fichier fichier contient les fonctionnalités de l'API wikipedia."""
+"""Ce Fichier fichier contient les fonctionnalités de l'API wikipedia.
+This File File contains the functionality of the Wikipedia API."""
 
 import json
 
@@ -11,7 +12,10 @@ from bs4 import BeautifulSoup
 class Api_wiki:
     """Cette classe permet d'émettre une demande via l'API wikipédia à
     l'initialisation nous chargeons les différentes variable dont on a
-    besoin."""
+    besoin.
+    This class is used to issue a request via the Wikipedia API to
+    initialization we load the different variables which we have
+    need."""
 
     def __init__(self):
         self.adresse_api = 'https://fr.wikipedia.org/w/api.php'
@@ -22,16 +26,16 @@ class Api_wiki:
 
     def search_api(self, terme_recherche, autres):
         """Permet d'éffectuer la recherche représenté par la variable
-        demande."""
+        demande.
+        Allows you to perform the search represented by the variable
+        request."""
         reponse = api_wikipedia(
             terme_recherche,
             self.adresse_api,
             self.session,
             autres)
-        # Permet de tester la réponse
         chaine_content = try_content(reponse, terme_recherche)
         if not chaine_content[1]:
-            # Permet de gérer la réponse
             chaine_finale = informations(chaine_content[0], reponse[1])
         else:
             chaine_finale = chaine_content[1]
@@ -39,9 +43,9 @@ class Api_wiki:
         return chaine_finale
 
 
-def informations(information, type_section):  # , pageid, nbr):
-    """Création de la réponse de papy à partir de la réponse api."""
-    #information_papy = gestion_chaine(information)
+def informations(information, type_section):
+    """Création de la réponse de papy à partir de la réponse api.
+    Creation of grandpa's response from the API response."""
     if type_section == "pages":
         for key in information.keys():
             dict_extract = information.get(key)
@@ -59,7 +63,8 @@ def informations(information, type_section):  # , pageid, nbr):
 
 
 def config_request_demande_loc(chaine):
-    """Paramétre de l'API."""
+    """Paramétre de l'API pour la requête en recherche.
+    API setting for search query."""
     parametres = {
         "action": "query",
         "format": "json",
@@ -71,7 +76,8 @@ def config_request_demande_loc(chaine):
 
 
 def config_request_demande_D(chaine):
-    """Paramétre de l'API."""
+    """Paramétre de l'API pour la requete en utilisant le titre.
+    API parameters for the request using the title."""
     parametres = {
         "action": "query",
         "format": "json",
@@ -90,7 +96,8 @@ def api_wikipedia(
         adresse_api,
         session,
         *autres):
-    """Envoie de la requête à l'API."""
+    """Envoie de la requête à l'API.
+    Sends a request to the API."""
     mot = terme_recherche[0]
     if mot.isdigit():
         parametres = config_request_demande_loc(terme_recherche)
@@ -110,7 +117,8 @@ def api_wikipedia(
 
 
 def try_content(reponse, demande):
-    """Cette fonction effectue un test sur les réponses de l'API."""
+    """Cette fonction effectue un test sur les réponses de l'API.
+    This function performs a test on the API responses."""
     try:
         chaine_content = reponse[0]["query"][reponse[1]]
     except KeyError:
@@ -122,6 +130,10 @@ def try_content(reponse, demande):
 
 
 def try_page(r, section, terme_recherche, adresse_api, session):
+    """Vérifie que la réponse de l'api convient si ce n'est pas le cas 
+    test une autre request.
+    Check that the API response is appropriate if it is not
+    test another request."""
 
     reponse = r.json()
     try:
@@ -137,7 +149,9 @@ def try_page(r, section, terme_recherche, adresse_api, session):
 
 def gestion_chaine(chaine):
     """Permet de récupérer la totalité ou partie de la réponse selon la demande
-    de l'utilisateur."""
+    de l'utilisateur.
+    Allows you to recover all or part of the response according to the request
+    of the user."""
     if chaine.find('homonymes') != - \
             1 or chaine.find('homonymie') != -1:
         homonyme_chaine = chaine.split(".")

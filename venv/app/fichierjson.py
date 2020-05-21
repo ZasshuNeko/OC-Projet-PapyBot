@@ -1,18 +1,24 @@
 # -*-coding:Utf-8 -*
 
-"""Ce Fichier fichier contient le corp de l'application."""
+""" This file file contains the class managing the creation of the response in json.
+Ce Fichier fichier contient la classe gérant la création de la réponse en json."""
 
 import json
 
 
 class Sourcejson():
+    """Cette classe permet de completer la réponse des apis puis de former 
+    un json renvoyé vers le code en javascript.
+    This class allows you to complete the API response and then train
+    a json returned to the code in javascript."""
     def __init__(self):
         self.warning = "<li class='list-group-item list-group-item-warning'>Vous : "
         self.success = "<li class='list-group-item list-group-item-success'>"
         self.end = "</li>"
 
     def creation_json(self, demande, gestion_demande):
-        """Gestion du json à envoyer vers Ajax."""
+        """Gestion du json à envoyer vers Ajax.
+        Management of the json to send to Ajax."""
         if len(gestion_demande[0]) >= 1:
             resultat = self.return_var(
                 util=demande,
@@ -39,7 +45,8 @@ class Sourcejson():
         return fichier_json
 
     def return_var(self, **dict_var):
-        """retour des informations pour le json."""
+        """retour des informations pour le json.
+        feedback for the json."""
         demande = self.warning + dict_var.get("util") + self.end
         if (dict_var.get("wiki")):
             papy_wiki = self.success + "<p>Papy :" + \
@@ -62,7 +69,8 @@ class Sourcejson():
 
     def papy_reponse(self, salutation, boolean_error,
                      *adresse):
-        """Génère la réponse de papy."""
+        """Complète la réponse du bot.
+        Complete the bot response."""
         if boolean_error:
             indication_papy = self.success + \
                 "Papy : Hmmmm attends ...heu..." + self.end
@@ -86,12 +94,15 @@ class Sourcejson():
         return indication_papy
 
     def reponse(self, adresse):
-        """Réponse formaté avec nom devant l'adresse."""
+        """Format une indication avec l'adresse trouvé.
+        Format an indication with the address found."""
         indication_papy = "Alors mon petit ! Sache que cela est situé " + \
             adresse
         return indication_papy
 
     def try_adress(self, adresse):
+        """Test si une carte doit être généré.
+        Test if a map should be generated."""
         try:
             selection_adresse = adresse[0]
         except BaseException:

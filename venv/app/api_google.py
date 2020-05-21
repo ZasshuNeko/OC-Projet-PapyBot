@@ -1,6 +1,8 @@
 # -*-coding:Utf-8 -*
 
-"""Ce Fichier fichier contient les fonctionnalités de l'API google."""
+"""Ce Fichier fichier contient les fonctionnalités de l'API google.
+This file file contains the functionality of the google API."""
+
 import configparser
 import json
 import re
@@ -9,7 +11,8 @@ import requests
 
 
 class Api_google:
-    """Cette classe permet de créer les demandes avec l'API google."""
+    """Cette classe permet de créer les demandes avec l'API google.
+    This class is used to create requests with the google API."""
 
     def __init__(self):
 
@@ -22,16 +25,19 @@ class Api_google:
 
     def search_api(self, demande):
         """Créer la demande et permet d'obtenir la réponse avec la variable
-        selection."""
+        selection.
+        Create the request and get the answer with the variable
+        selection."""
         key = self.config.get('GOOGLE', 'Key')
         parametres = self.config_requests(demande, key)
         rtest = requests.get(url=self.adresse_api, params=parametres)
         reponseG = rtest.json()
         selection = self.geometry_json(reponseG)
-        # Permet de sélectionner le lien vers l'image google map
         return selection
 
     def config_requests(self, demande, key):
+        """Paramètres pour le request vers l'api.
+        Parameters for the request to the API."""
         parametres = {'query': demande,
                       'region': 'fr',
                       'key': key}
@@ -39,6 +45,8 @@ class Api_google:
         return parametres
 
     def geometry_json(self, reponsejson):
+        """ Récupération des informations renvoyé par l'API.
+        Retrieving information sent by the API."""
         try:
             x = 0
             for dic in reponsejson['results']:
