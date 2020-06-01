@@ -5,7 +5,7 @@ OpenClassRooms - Projet 7
 I. Description
 ==============
 
-Ce programme à pour but de créer un bot capable de réponse à des questions de position et de connaissance.
+Ce programme a pour but de créer un bot capable de réponse à des questions de position et de connaissance.
 Basé sur l'API Wikipedia et Google, cette application permet d'afficher les lieux et de tirer une information de ce dernier.
 
 II. Installation de python 3
@@ -13,24 +13,24 @@ II. Installation de python 3
 
 **Windows 10**
 > Rendez-vous sur (https://python.org/downloads/)
-> Télécharger la dernière version de python 3.X.X
-> Installer la sur votre système
+> Téléchargez la dernière version de python 3.X.X
+> Installez la sur votre système
 
 III. Installation de Git et copie du programme
 ==============================================
 
 > Rendez-vous sur (https://git-scm.com/downloads)
-> Télécharger la dernière version de git
-> Installer cette dernière puis lancer l'application "Git Bash"
+> Téléchargez la dernière version de git
+> Installez cette dernière puis lancer l'application "Git Bash"
 
-Copier le répertoire du programme avec la commande : `git clone https://github.com/ZasshuNeko/OC-Projet_5.git`
+Copiez le répertoire du programme avec la commande : `git clone https://github.com/ZasshuNeko/OC-Projet_5.git`
 
 
 IV. Executer le programme
 =========================
 
-Pour une exécution local, lancé l'environnement virtuel Flask puis placez vous dans le dossier venv. 
-Lancer l'application en executant :
+Pour une exécution local, lancez l'environnement virtuel Flask puis placez vous dans le dossier venv. 
+Lancez l'application en executant :
 
 `set FLASK_APP=main.py`
 `python -m flask run`
@@ -45,22 +45,22 @@ V. Le programme
 Le programme est composé d'une unique page html. 
 Utiliser la zone de texte du formulaire pour poser la question.
 
-Toutes questions tel que : Où est xxxx ?
-Sera traité en fournissant une map avec les différentes adresse trouvé et une explication de la part du bot.
+Toute question telle que : Où est xxxx ?
+Sera traitée en fournissant une map avec les différentes adresses trouvées et une explication de la part du bot.
 
-Toutes question tel que : C'est quoi xxxx ?
-Sera traité en fournissant des informations sur l'objet de votre demande et aucune carte ne sera montré
+Toute question tel que : C'est quoi xxxx ?
+Sera traitée en fournissant des informations sur l'objet de votre demande et aucune carte ne sera montrée.
 
-Les demandes uniques sont rejeté.
-Les autres questions qui peuvent vous venir à l'esprit sont traité de manière aléatoire par le bot et pensez bien à le saluer à chaque question sinon il pourrait se facher.
+Les demandes uniques sont rejetées.
+Les autres questions qui peuvent vous venir à l'esprit sont traitées de manière aléatoire par le bot et pensez bien à le saluer à chaque question sinon il pourrait se fâcher.
 
-Les chiffres sont interdit et renvois un refus du bot sans créer de rafraichissement.
+Les chiffres sont interdits et renvoie un refus du bot sans créer de rafraichissement.
 
 VI. Les tests
 =============
 
-Les tests pour le programme se trouve dans le dossier pytest.
-La couverture des ces tests est de 85% et ils peuvent être executer avec ces lignes :
+Les tests pour le programme se trouvent dans le dossier pytest.
+La couverture des ces tests est de 85% et ils peuvent être executés avec ces lignes :
 pytest -v -s pytest\test_projet.py
 pytest -v -s pytest\test_api.py
 

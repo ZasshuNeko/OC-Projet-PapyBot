@@ -3,3 +3,8 @@ body {
 	background-image: url("fondprojet7.png");
 	background-repeat: repeat;
 }
+
+a {
+	color: black;
+	text-decoration: none;
+}
