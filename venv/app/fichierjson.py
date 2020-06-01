@@ -87,7 +87,7 @@ class Sourcejson():
                 if isinstance(selection_adresse, str):
                     indication_papy = selection_adresse
                 else:
-                    indication_papy = "Voyons, il y a beaucoup d'endroit pour tous te les citer"
+                    indication_papy = "Voyons, il y a beaucoup d'endroits pour tous te les citer"
 
             indication_papy = self.success + "Papy : " + \
                 salutation + "</br>" + indication_papy + self.end
@@ -106,5 +106,5 @@ class Sourcejson():
         try:
             selection_adresse = adresse[0]
         except BaseException:
-            selection_adresse = "Papy : Au vu de ta question ...Une carte serait superflu !"
+            selection_adresse = "Papy : Au vu de ta question ...Une carte serait superflue !"
         return selection_adresse

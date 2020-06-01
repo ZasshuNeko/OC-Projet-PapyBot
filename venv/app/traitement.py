@@ -20,6 +20,8 @@ nltk.data.path.append('nltk_data/')
 
 
 class Traitement:
+    """Cette classe contient les modules permettant de traiter les demandes utilisateur
+    This class contains modules for processing user resquests"""
     def __init__(self):
         self.config = configparser.ConfigParser()
         self.config.read('app/config.ini', 'utf8')
@@ -130,7 +132,7 @@ class Traitement:
                     error = True
                     maping = False
         if len(filtered_words) == 0:
-            terme = 'Dit moi ce que tu veux mon enfant ...'
+            terme = 'Dis moi ce que tu veux mon enfant ...'
             error = True
             maping = False
 
@@ -167,7 +169,7 @@ class Traitement:
                     else:
                         maping = False
         elif index in self.liste_temporelle and index not in self.liste_histoire:
-            terme = "Tu sais ce qui se passera plus tard est un mystère et parfois il faut le chérir..."
+            terme = "Tu sais, ce qui se passera plus tard est un mystère et parfois il faut le chérir..."
             error = True
         elif index in self.liste_histoire:
             index_terme = randint(0, 11)
